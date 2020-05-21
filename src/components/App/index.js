@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Navigation from '../Navigation';
 import LandingPage from '../Landing';
@@ -9,38 +9,16 @@ import HomePage from '../Home';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
 
-import { withFirebase } from '../Firebase';
+import { withAuthentication } from '../Session';
 
 import * as ROUTES from '../../constants/routes';
 
-class App extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            authUser: null,
-        };
-    }
-
-   componentDidMount() {
-       this.listener = this.props.firebase.auth.onAuthStateChanged(
-           authUser => {
-               authUser ? this.setState({ authUser }) : this.setState({ authUser: null});
-           },
-       );
-   }
-
-   componentWillUnmount() {
-       this.listener();
-   }
-
-    render() {
-        return (
-            <Router>
+const App = () => (
+    <Router>
         <div>
-            <Navigation authUser={this.state.authUser} />
+            <Navigation />
 
-            <hr />
+                <hr />
 
             <Route 
                 exact path={ROUTES.LANDING}
@@ -60,13 +38,11 @@ class App extends Component {
             <Route 
                 path={ROUTES.ACCOUNT}
                 component={AccountPage} />
-            <Route 
+             <Route 
                 path={ROUTES.ADMIN}
                 component={AdminPage} />
         </div>
     </Router>
-        );
-    }
-}
+)
 
-export default withFirebase(App);
+export default withAuthentication(App);
